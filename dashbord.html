@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1280" />
+<title>BG Technology — Dashboard</title>
+<style>
+  :root { --accent:#007bff; --accent-dark:#005ec3; --bg:#f5f7fb; --card:#fff; --muted:#666; }
+  html,body { height:100%; margin:0; font-family:Inter,Arial,sans-serif; background:var(--bg); }
+  .topbar { height:64px; background:#041222; color:#fff; display:flex; align-items:center; padding:0 20px; justify-content:space-between; box-shadow:0 2px 6px rgba(0,0,0,0.15); }
+  .brand { display:flex; align-items:center; gap:12px; }
+  .brand img { height:36px; width:36px; border-radius:6px; object-fit:cover; }
+  .brand h3 { margin:0; font-size:18px; color:#fff; letter-spacing:0.4px; }
+  .top-right { display:flex; align-items:center; gap:12px; }
+  .corner-badge { display:flex; align-items:center; gap:10px; background: rgba(255,255,255,0.95); padding:8px 12px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.12); color:#222; min-width:140px; justify-content:space-between;}
+  .corner-badge img { height:28px; width:28px; border-radius:6px; object-fit:cover; margin-right:8px; }
+  .badge-value { font-weight:700; font-size:15px; }
+  .layout { display:flex; height: calc(100% - 64px); }
+  .sidebar { width:220px; background:#0b2030; color:#cfe9ff; padding:20px; box-shadow:2px 0 6px rgba(0,0,0,0.12); }
+  .sidebar h4 { margin-top:0; color:#fff; font-size:14px; }
+  .nav { margin-top:18px; display:flex; flex-direction:column; gap:8px; }
+  .nav a { padding:10px 12px; border-radius:8px; color:#cfe9ff; text-decoration:none; display:flex; align-items:center; gap:10px; font-weight:600; }
+  .nav a.active, .nav a:hover { background: rgba(255,255,255,0.06); color:#fff; }
+  .main { flex:1; padding:20px; overflow:auto; }
+  .cards { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin-bottom:18px; }
+  .card { background: var(--card); padding:16px; border-radius:10px; box-shadow:0 4px 12px rgba(9,30,66,0.04); }
+  .card h5 { margin:0 0 8px 0; color: var(--muted); font-size:13px; }
+  .card .value { font-size:20px; font-weight:700; color: var(--accent-dark); }
+  .tabs { background:var(--card); border-radius:10px; padding:12px; margin-bottom:18px; display:flex; gap:8px; }
+  .tab { padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:700; color:#333; }
+  .tab.active { background: linear-gradient(90deg,var(--accent),var(--accent-dark)); color:#fff; }
+  table { width:100%; border-collapse: collapse; background:var(--card); border-radius:8px; overflow:hidden; box-shadow:0 4px 12px rgba(9,30,66,0.04); }
+  th,td { padding:12px 14px; text-align:left; border-bottom:1px solid #f0f2f6; font-size:14px; color:#333; }
+  th { background:#f7f9fc; color:#555; font-weight:700; }
+  .muted { color:#888; font-size:13px; }
+  .small { font-size:12px; color:#666; }
+  @media (max-width:900px) { .sidebar{display:none;} .layout{flex-direction:column;} }
+  .task-item:hover { background:#5590ad; transition:0.3s; }
+  .tool-grid { display:flex; flex-wrap:wrap; gap:16px; }
+  .tool { display:flex; flex-direction:column; align-items:center; justify-content:center; width:110px; height:110px; background:rgba(245,245,245,0.9); border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1); text-decoration:none; color:#333; transition:transform 0.2s ease,box-shadow 0.2s ease; }
+  .tool:hover { transform:translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+  .tool img { width:40px; height:40px; margin-bottom:8px; }
+  .tool span { font-size:14px; font-weight:bold; }
+  button { cursor:pointer; border-radius:6px; padding:4px 8px; border:none; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">
+    <img src="WhatsApp Image 2025-04-18 at 21.38.56_8ba60cbe.jpg" alt="logo">
+    <h3>बरुरे औद्योगिक समूह — BG Technology</h3>
+  </div>
+  <div class="top-right">
+    <div class="corner-badge" id="revenue-badge">
+      <div style="display:flex; align-items:center;">
+        <img src="OIP.webp" alt="rev">
+        <div>
+          <div class="small muted">Revenue</div>
+          <div class="badge-value" id="revValue"><b>—</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="corner-badge" id="liability-badge" style="background: rgba(255,230,230,0.95);">
+      <div style="display:flex; align-items:center;">
+        <img src="downfall-line-icon-vector.jpg" alt="liab">
+        <div>
+          <div class="small muted">Liability</div>
+          <div class="badge-value" id="liabValue"><b>—</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="corner-badge" id="expense-badge" style="background: rgba(230,255,230,0.95);">
+      <div style="display:flex; align-items:center;">
+        <img src="8645929.png" alt="exp">
+        <div>
+          <div class="small muted">Expenses</div>
+          <div class="badge-value" id="expValue"><b>—</b></div>
+        </div>
+      </div>
+    </div>
+    <div style="width:8px;"></div>
+    <div style="color:#fff; font-weight:600;">Welcome, <span id="userName">User</span></div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <h4>Company</h4>
+    <div class="nav">
+      <a href="#" class="nav-link active" data-tab="overview">Overview</a>
+      <a href="#" class="nav-link" data-tab="finance">Finance</a>
+      <a href="#" class="nav-link" data-tab="invoices">Invoices</a>
+      <a href="#" class="nav-link" data-tab="expenses">Expenses</a>
+      <a href="#" class="nav-link" data-tab="crm">CRM</a>
+      <a href="#" id="logoutBtn" style="margin-top:14px; color:#ffb3b3; font-weight:700;">Logout</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="tabs" id="tabControls">
+      <div class="tab active" data-tab="overview">Overview</div>
+      <div class="tab" data-tab="finance">Finance</div>
+      <div class="tab" data-tab="invoices">Invoices</div>
+      <div class="tab" data-tab="expenses">Expenses</div>
+      <div class="tab" data-tab="crm">CRM</div>
+    </div>
+
+    <!-- Overview -->
+    <section id="overview" class="tabContent">
+      <div class="cards">
+        <div class="card"><h5>Total Revenue</h5><div class="value" id="cardRev">—</div><div class="small muted">From Invoices</div></div>
+        <div class="card"><h5>Total Liability</h5><div class="value" id="cardLiab">—</div><div class="small muted">From Finance Ledger</div></div>
+        <div class="card"><h5>Outstanding Invoices</h5><div class="value" id="cardOut">0</div><div class="small muted">Invoices Count</div></div>
+        <div class="card"><h5>Customers (CRM)</h5><div class="value" id="cardCust">0</div><div class="small muted">Active</div></div>
+        <div class="card"><h5>Total Expenses</h5><div class="value" id="cardExp">0</div><div class="small muted">Expenses Count</div></div>
+      </div>
+      <div class="card" style="margin-bottom:15px;">
+        <h4>Charts</h4>
+        <canvas id="liabRevChart" style="width:100%;height:150px;"></canvas>
+        <canvas id="revExpChart" style="width:100%;height:150px;margin-top:15px;"></canvas>
+      </div>
+    </section>
+
+    <!-- Finance -->
+    <section id="finance" class="tabContent" style="display:none;">
+      <h3>Finance Summary</h3>
+      <div class="cards">
+        <div class="card"><h5>Revenue</h5><div class="value" id="financeRev">0</div></div>
+        <div class="card"><h5>Liability</h5><div class="value" id="financeLiab">0</div></div>
+        <div class="card"><h5>Net Profit</h5><div class="value" id="financeNet">0</div></div>
+        <div class="card"><h5>Bank Balance</h5><div class="value" id="financeBank">0</div></div>
+      </div>
+      <div class="card" style="margin-top:15px;">
+        <h4>Liabilities & Bank Ledger</h4>
+        <form id="liabilityForm" style="display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-bottom:10px;">
+          <input type="text" id="liabTitle" placeholder="Title (EMI / Loan / Credit)" required>
+          <input type="number" id="liabAmount" placeholder="Amount (₹)" required>
+          <input type="date" id="liabDate" required>
+          <select id="liabType" required>
+            <option value="Debit">Debit</option>
+            <option value="Credit">Credit</option>
+          </select>
+          <button type="submit" style="background:#ff4d4d; color:#fff;">Add Entry</button>
+        </form>
+        <table id="liabilityTable">
+          <thead>
+            <tr><th>Title</th><th>Amount</th><th>Date</th><th>Type</th><th>Actions</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Invoices -->
+    <section id="invoices" class="tabContent" style="display:none;">
+      <h3>Invoices</h3>
+      <div class="card" style="margin-bottom:16px;">
+        <h4>Create New Invoice</h4>
+        <form id="invoiceForm" style="display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:10px;">
+          <input type="text" id="invNumber" placeholder="Invoice #" required>
+          <input type="text" id="invCustomer" placeholder="Customer Name" required>
+          <input type="email" id="invEmail" placeholder="Email" required>
+          <input type="tel" id="invPhone" placeholder="Mobile" required>
+          <input type="text" id="invLocation" placeholder="Location" required>
+          <input type="number" id="invAmount" placeholder="Amount (₹)" required>
+          <input type="date" id="invDueDate" required>
+          <select id="invStatus" required><option value="Open">Open</option><option value="Paid">Paid</option><option value="Overdue">Overdue</option></select>
+          <button type="submit" style="background:var(--accent); color:#fff;">Add Invoice</button>
+        </form>
+      </div>
+      <table id="invoiceBody">
+        <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Mobile</th><th>Location</th><th>Amount</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- Expenses -->
+    <section id="expenses" class="tabContent" style="display:none;">
+      <h3>Expenses</h3>
+      <div class="card" style="margin-bottom:16px;">
+        <h4>Add Expense</h4>
+        <form id="expenseForm" style="display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:10px;">
+          <input type="text" id="expTitle" placeholder="Title" required>
+          <input type="number" id="expAmount" placeholder="Amount (₹)" required>
+          <input type="date" id="expDate" required>
+          <button type="submit" style="background:green; color:#fff;">Add Expense</button>
+        </form>
+      </div>
+      <table id="expenseBody">
+        <thead><tr><th>Title</th><th>Amount</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- CRM -->
+    <section id="crm" class="tabContent" style="display:none;">
+      <h3>Customer Management</h3>
+      <div class="card" style="margin-bottom:16px;">
+        <h4>Add Customer</h4>
+        <form id="customerForm" style="display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:10px;">
+          <input type="text" id="custName" placeholder="Name" required>
+          <input type="tel" id="custMobile" placeholder="Mobile" required>
+          <input type="email" id="custEmail" placeholder="Email" required>
+          <input type="text" id="custLocation" placeholder="Location" required>
+          <button type="submit" style="background:var(--accent); color:#fff;">Add Customer</button>
+        </form>
+      </div>
+      <div id="customerList"></div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Auth
+  const user = localStorage.getItem('loggedInUser');
+  if(!user){ window.location.href='index.html'; } else { document.getElementById('userName').textContent=user; }
+
+  // Tabs
+  function showTab(tab){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
+    document.querySelectorAll('.nav-link').forEach(n=>n.classList.toggle('active',n.dataset.tab===tab));
+    document.querySelectorAll('.tabContent').forEach(c=>c.style.display=c.id===tab?'block':'none');
+  }
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>showTab(t.dataset.tab)));
+  document.querySelectorAll('.nav-link').forEach(n=>n.addEventListener('click',()=>showTab(n.dataset.tab)));
+  document.getElementById('logoutBtn').addEventListener('click',()=>{ localStorage.removeItem('loggedInUser'); window.location.href='index.html'; });
+
+  // Data
+  let invoices = JSON.parse(localStorage.getItem('invoices')||'[]');
+  let expenses = JSON.parse(localStorage.getItem('expenses')||'[]');
+  let customers = JSON.parse(localStorage.getItem('customers')||'[]');
+  let liabilities = JSON.parse(localStorage.getItem('liabilities')||'[]');
+  let bankBalance = parseFloat(localStorage.getItem('bankBalance')||'0');
+
+  // ---- FUNCTIONS ----
+
+  function saveLocal(){
+    localStorage.setItem('invoices', JSON.stringify(invoices));
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+    localStorage.setItem('customers', JSON.stringify(customers));
+    localStorage.setItem('liabilities', JSON.stringify(liabilities));
+    localStorage.setItem('bankBalance', bankBalance);
+  }
+
+  // Invoices
+  document.getElementById('invoiceForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    let inv = {
+      num:document.getElementById('invNumber').value,
+      name:document.getElementById('invCustomer').value,
+      email:document.getElementById('invEmail').value,
+      mobile:document.getElementById('invPhone').value,
+      loc:document.getElementById('invLocation').value,
+      amt:parseFloat(document.getElementById('invAmount').value),
+      due:document.getElementById('invDueDate').value,
+      status:document.getElementById('invStatus').value
+    };
+    invoices.push(inv); saveLocal(); updateInvoices(); e.target.reset();
+  });
+
+  function updateInvoices(){
+    const tbody = document.querySelector('#invoiceBody tbody'); tbody.innerHTML='';
+    invoices.forEach((i,idx)=>{
+      let tr = document.createElement('tr');
+      tr.innerHTML=`<td>${i.num}</td><td>${i.name}</td><td>${i.email}</td><td>${i.mobile}</td><td>${i.loc}</td><td>${i.amt}</td><td>${i.due}</td><td>${i.status}</td>
+        <td><button onclick="deleteInvoice(${idx})">Del</button></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function deleteInvoice(idx){ invoices.splice(idx,1); saveLocal(); updateInvoices(); updateOverview(); }
+
+  // Expenses
+  document.getElementById('expenseForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    let exp = {title:document.getElementById('expTitle').value, amt:parseFloat(document.getElementById('expAmount').value), date:document.getElementById('expDate').value};
+    expenses.push(exp); saveLocal(); updateExpenses(); e.target.reset();
+  });
+
+  function updateExpenses(){
+    const tbody = document.querySelector('#expenseBody tbody'); tbody.innerHTML='';
+    expenses.forEach((exp, idx)=>{
+      let tr = document.createElement('tr');
+      tr.innerHTML=`<td>${exp.title}</td><td>${exp.amt}</td><td>${exp.date}</td><td><button onclick="deleteExpense(${idx})">Del</button></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function deleteExpense(idx){ expenses.splice(idx,1); saveLocal(); updateExpenses(); updateOverview(); }
+
+  // Customers
+  document.getElementById('customerForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    let cust = {name:document.getElementById('custName').value, mobile:document.getElementById('custMobile').value, email:document.getElementById('custEmail').value, loc:document.getElementById('custLocation').value};
+    customers.push(cust); saveLocal(); updateCustomers(); e.target.reset();
+  });
+
+ // Customers
+document.getElementById('customerForm').addEventListener('submit', e => {
+  e.preventDefault();
+  let cust = {
+    name: document.getElementById('custName').value,
+    mobile: document.getElementById('custMobile').value,
+    email: document.getElementById('custEmail').value,
+    loc: document.getElementById('custLocation').value
+  };
+  customers.push(cust);
+  localStorage.setItem('customers', JSON.stringify(customers)); // save to localStorage
+  updateCustomers();
+  document.getElementById('customerForm').reset();
+});
+
+function updateCustomers(){
+  const div = document.getElementById('customerList');
+  div.innerHTML = customers.map((c, idx) => `
+    <div class="card small" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+      <span>${c.name} | ${c.mobile} | ${c.email} | ${c.loc}</span>
+      <button onclick="deleteCustomer(${idx})" style="background:#ff4d4d; color:#fff; padding:2px 6px; border-radius:4px;">Del</button>
+    </div>
+  `).join('');
+
+  // Update Overview CRM count live
+  document.getElementById('cardCust').textContent = customers.length;
+
+  updateOverview(); // update other overview stats if needed
+}
+
+function deleteCustomer(idx){
+  if(confirm("Are you sure you want to delete this customer?")){
+    customers.splice(idx,1);
+    localStorage.setItem('customers', JSON.stringify(customers)); // update storage
+    updateCustomers();
+  }
+}
+
+
+
+  // Liabilities
+  document.getElementById('liabilityForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    let l = {
+      title: document.getElementById('liabTitle').value,
+      amount: parseFloat(document.getElementById('liabAmount').value),
+      date: document.getElementById('liabDate').value,
+      type: document.getElementById('liabType').value
+    };
+    liabilities.push(l); saveLocal(); updateLiabilities(); e.target.reset();
+  });
+
+  function updateLiabilities(){
+    const tbody = document.querySelector('#liabilityTable tbody'); tbody.innerHTML=''; bankBalance=0;
+    liabilities.forEach((l,idx)=>{
+      let tr = document.createElement('tr');
+      tr.innerHTML=`<td>${l.title}</td><td>${l.amount}</td><td>${l.date}</td><td>${l.type}</td>
+        <td><button onclick="editLiability(${idx})">Edit</button> <button onclick="deleteLiability(${idx})">Del</button></td>`;
+      tbody.appendChild(tr);
+      bankBalance += (l.type==='Credit') ? l.amount : -l.amount;
+    });
+    document.getElementById('financeBank').textContent=bankBalance.toFixed(2);
+    document.getElementById('financeLiab').textContent=liabilities.filter(l=>l.type==='Debit').reduce((a,l)=>a+l.amount,0).toFixed(2);
+    saveLocal(); updateOverview();
+  }
+
+  function deleteLiability(idx){ liabilities.splice(idx,1); updateLiabilities(); }
+  function editLiability(idx){
+    let l = liabilities[idx];
+    document.getElementById('liabTitle').value = l.title;
+    document.getElementById('liabAmount').value = l.amount;
+    document.getElementById('liabDate').value = l.date;
+    document.getElementById('liabType').value = l.type;
+    liabilities.splice(idx,1); updateLiabilities();
+  }
+
+  // Overview
+  function updateOverview(){
+    let totalRev=invoices.reduce((a,i)=>a+i.amt,0);
+    let totalLiab=liabilities.filter(l=>l.type==='Debit').reduce((a,l)=>a+l.amount,0);
+    let totalExp=expenses.reduce((a,e)=>a+e.amt,0);
+
+    document.getElementById('cardRev').textContent=totalRev.toFixed(2);
+    document.getElementById('cardLiab').textContent=totalLiab.toFixed(2);
+    document.getElementById('cardOut').textContent=invoices.length;
+    document.getElementById('cardCust').textContent=customers.length;
+    document.getElementById('cardExp').textContent=totalExp.toFixed(2);
+
+    document.getElementById('revValue').textContent=totalRev.toFixed(2);
+    document.getElementById('liabValue').textContent=totalLiab.toFixed(2);
+    document.getElementById('expValue').textContent=totalExp.toFixed(2);
+
+    document.getElementById('financeRev').textContent=totalRev.toFixed(2);
+    document.getElementById('financeLiab').textContent=totalLiab.toFixed(2);
+    document.getElementById('financeNet').textContent=(totalRev-totalLiab-totalExp).toFixed(2);
+
+    renderCharts(totalRev, totalLiab, totalExp);
+  }
+
+  let liabRevChart, revExpChart;
+function renderCharts(rev, liab, exp){
+  const ctx1 = document.getElementById('liabRevChart').getContext('2d');
+  const ctx2 = document.getElementById('revExpChart').getContext('2d');
+  
+  if(liabRevChart) liabRevChart.destroy();
+  if(revExpChart) revExpChart.destroy();
+
+  // Revenue vs Liability as LINE chart
+  liabRevChart = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: ['Revenue', 'Liability'],
+      datasets: [{
+        label: 'Amount',
+        data: [rev, liab],
+        borderColor: '#007bff',
+        backgroundColor: 'rgba(0,123,255,0.2)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } } }
+  });
+
+  // Revenue vs Expenses as LINE chart (unchanged)
+  revExpChart = new Chart(ctx2, {
+    type: 'line',
+    data: {
+      labels: ['Revenue', 'Expenses'],
+      datasets: [{
+        label: 'Amount',
+        data: [rev, exp],
+        borderColor: '#28a745',
+        fill: false,
+        tension: 0.3
+      }]
+    },
+    options: { responsive: true }
+  });
+}
+
+  
+
+  // INIT
+  updateInvoices(); updateExpenses(); updateCustomers(); updateLiabilities(); updateOverview();
+
+</script>
+</body>
+</html>
